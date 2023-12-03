@@ -117,7 +117,7 @@ async def dolar(Interaction: discord.Interaction, casa: Casa):
 
 @client.tree.command(description="a350 bois")
 async def a350(Interaction: discord.Interaction):
-    embed = discord.Embed(title="a350 boiss", color=0x00ff00)
+    embed = discord.Embed(title="a350 bois", color=0x00ff00)
     embed.set_image(
         url="https://cdn.discordapp.com/attachments/795095607915053136/837719645603627048/2018_Airbus_A350-1000_Cooling.jpg")
     await Interaction.response.send_message(embed=embed)
