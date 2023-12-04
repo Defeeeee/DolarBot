@@ -9,7 +9,7 @@ import discord
 from discord import app_commands
 from datetime import datetime
 
-client_status = cycle(["Sergio", "Coppa", "Servidor"])
+client_status = cycle(["Dolar Blue", f"ARS {json.loads(requests.get('https://dolarapi.com/v1/dolares/blue').text)['venta']}"])
 
 load_dotenv()
 
@@ -34,7 +34,7 @@ guild = discord.Object(id=868582958729150504)
 
 @tasks.loop(seconds=5)
 async def change_status():
-    await client.change_presence(activity=discord.Game(next(client_status)))
+    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=next(client_status)))
 
 
 @client.event
