@@ -115,26 +115,4 @@ async def dolar(Interaction: discord.Interaction, casa: Casa):
     await Interaction.response.send_message(embed=embed)
 
 
-@client.tree.command(description="a350 bois")
-async def a350(Interaction: discord.Interaction):
-    embed = discord.Embed(title="a350 boiss", color=0x00ff00)
-    embed.set_image(
-        url="https://cdn.discordapp.com/attachments/795095607915053136/837719645603627048/2018_Airbus_A350-1000_Cooling.jpg")
-    await Interaction.response.send_message(embed=embed)
-
-
-@client.tree.command(description="say")
-@app_commands.describe(say='What to say')
-async def say(Interaction: discord.Interaction, say: str):
-    embed = discord.Embed(title=f"{Interaction.user} dice {say}", color=0x00ff00)
-    embed.set_footer(text=f"ID: {Interaction.user.id}", icon_url=Interaction.user.avatar)
-    embed.timestamp = Interaction.created_at
-    await Interaction.response.send_message(embed=embed)
-
-
-@client.tree.command(description="WAAAAA")
-async def waaaaa(self: discord.Interaction, num1: int, num2: int):
-    await self.response.send_message(f'WAAAAA {num1} + {num2} = {num1 + num2}')
-
-
 client.run(os.getenv('TOKEN'))
