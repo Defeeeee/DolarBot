@@ -21,7 +21,7 @@ class Casa(Enum):
     Cripto = 'cripto'
 
 client_status = cycle(["Dolar ARG", f"Blue: ARS {json.loads(requests.get(f'https://dolarapi.com/v1/dolares/blue').text)['venta']}"])
-print(f'https://dolarapi.com/v1/dolares/{random.choice(list(Casa)).key}')
+print(f'https://dolarapi.com/v1/dolares/{random.choice(list(Casa)).name}')
 load_dotenv()
 
 class MyClient(discord.Client):
