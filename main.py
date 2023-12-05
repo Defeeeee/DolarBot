@@ -8,8 +8,22 @@ from itertools import cycle
 import discord
 from discord import app_commands
 from datetime import datetime
+import random
 
-client_status = cycle(["Dolar Blue", f"ARS {json.loads(requests.get('https://dolarapi.com/v1/dolares/blue').text)['venta']}"])
+class Casa(Enum):
+    Blue = 'blue'
+    Oficial = 'oficial'
+    Solidario = 'solidario'
+    Bolsa = 'bolsa'
+    CCL = 'contadoconliqui'
+    Tarjeta = 'tarjeta'
+    Mayorista = 'mayorista'
+    Cripto = 'cripto'
+
+client_status = cycle(
+    ["Dolar ARG",
+    f"Blue: ARS {json.loads(requests.get(f'https://dolarapi.com/v1/dolares/{random.choice(list(Casa))}').text)['venta']}",]
+)
 
 load_dotenv()
 
@@ -82,17 +96,6 @@ async def request(Interaction: discord.Interaction, url: str):
     embed.set_footer(text=f'User: {Interaction.user}', icon_url=Interaction.user.avatar)
     embed.timestamp = Interaction.created_at
     await Interaction.response.send_message(embed=embed)
-
-
-class Casa(Enum):
-    Blue = 'blue'
-    Oficial = 'oficial'
-    Solidario = 'solidario'
-    Bolsa = 'bolsa'
-    CCL = 'contadoconliqui'
-    Tarjeta = 'tarjeta'
-    Mayorista = 'mayorista'
-    Cripto = 'cripto'
 
 
 @client.tree.command(description="Devuelve el valor del dolar solicitado")
