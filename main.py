@@ -10,6 +10,7 @@ from discord import app_commands
 from datetime import datetime
 import random
 
+
 class Casa(Enum):
     Blue = 'blue'
     Oficial = 'oficial'
@@ -20,11 +21,18 @@ class Casa(Enum):
     Mayorista = 'mayorista'
     Cripto = 'cripto'
 
-randoma = random.choice(list(Casa))
 
-client_status = cycle(["Dolar ARG", f"{randoma.name}: ARS {json.loads(requests.get(f'https://dolarapi.com/v1/dolares/{randoma.value}').text)['venta']}"])
-print()
+def dolarstr(tipo):
+    return f"{Casa._value2member_map_[tipo].name}: ARS {json.loads(requests.get(f'https://dolarapi.com/v1/dolares/{tipo}').text)['venta']}"
+
+# por cada item de Casa  agrega un campo con el nombre del item y el valor del dolar intercalados por "Dolar ARG
+
+client_status = cycle(["Dolar ARG",dolarstr(Casa.Blue.value), "Dolar ARG",dolarstr(Casa.Oficial.value), "Dolar ARG",dolarstr(Casa.Solidario.value),
+                       "Dolar ARG",dolarstr(Casa.Bolsa.value), "Dolar ARG",dolarstr(Casa.CCL.value), "Dolar ARG",dolarstr(Casa.Tarjeta.value),
+                       "Dolar ARG",dolarstr(Casa.Mayorista.value), "Dolar ARG",dolarstr(Casa.Cripto.value)])
+
 load_dotenv()
+
 
 class MyClient(discord.Client):
     def __init__(self, *, intents: discord.Intents):
@@ -45,10 +53,10 @@ client = MyClient(intents=intents)
 guild = discord.Object(id=868582958729150504)
 
 
-@tasks.loop(seconds=5)
+@tasks.loop(seconds=2)
 async def change_status():
-    randoma = random.choice(list(Casa))
-    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=next(client_status)))
+    await client.change_presence(
+        activity=discord.Activity(type=discord.ActivityType.watching, name=next(client_status)))
 
 
 @client.event
