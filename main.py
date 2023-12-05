@@ -53,7 +53,7 @@ client = MyClient(intents=intents)
 guild = discord.Object(id=868582958729150504)
 
 
-@tasks.loop(seconds=2)
+@tasks.loop(seconds=3)
 async def change_status():
     await client.change_presence(
         activity=discord.Activity(type=discord.ActivityType.watching, name=next(client_status)))
