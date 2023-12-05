@@ -20,8 +20,10 @@ class Casa(Enum):
     Mayorista = 'mayorista'
     Cripto = 'cripto'
 
-client_status = cycle(["Dolar ARG", f"Blue: ARS {json.loads(requests.get(f'https://dolarapi.com/v1/dolares/blue').text)['venta']}"])
-print(f'https://dolarapi.com/v1/dolares/{random.choice(list(Casa)).name}')
+randoma = random.choice(list(Casa))
+
+client_status = cycle(["Dolar ARG", f"{randoma.name}: ARS {json.loads(requests.get(f'https://dolarapi.com/v1/dolares/{randoma.value}').text)['venta']}"])
+print()
 load_dotenv()
 
 class MyClient(discord.Client):
@@ -45,6 +47,7 @@ guild = discord.Object(id=868582958729150504)
 
 @tasks.loop(seconds=5)
 async def change_status():
+    randoma = random.choice(list(Casa))
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=next(client_status)))
 
 
