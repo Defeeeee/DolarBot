@@ -20,9 +20,8 @@ class Casa(Enum):
     Mayorista = 'mayorista'
     Cripto = 'cripto'
 
-client_status = cycle(
-    ["Dolar ARG", f"Blue: ARS {json.loads(requests.get(f'https://dolarapi.com/v1/dolares/blue').text)['venta']}"])
-
+client_status = cycle(["Dolar ARG", f"Blue: ARS {json.loads(requests.get(f'https://dolarapi.com/v1/dolares/blue').text)['venta']}"])
+print(f'https://dolarapi.com/v1/dolares/{random.choice(list(Casa))}')
 load_dotenv()
 
 class MyClient(discord.Client):
