@@ -114,11 +114,15 @@ async def run(Interaction: discord.Interaction, command: str):
     if not Interaction.user.id == 333215596944818177:
         await Interaction.response.send_message("No tenes permiso para usar este comando", ephemeral=True)
         return
+    # await Interaction.response.defer()
     embed = discord.Embed(title=f'Run command {command}', color=0x00ff00)
     try:
-        result = sp.run(command, stdout=sp.PIPE, stderr=sp.PIPE, shell=True, timeout=5)
+        result = sp.run(command, stdout=sp.PIPE, stderr=sp.PIPE, shell=True, timeout=2)
         formatted_string = result.stdout.decode('utf-8')
 
+    except sp.TimeoutExpired:
+        await Interaction.response.send_message("Timeout", ephemeral=True)
+        return
     except:
         await Interaction.response.send_message("Error al correr el comando", ephemeral=True)
         return
