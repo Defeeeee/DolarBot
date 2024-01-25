@@ -14,7 +14,6 @@ import random
 class Casa(Enum):
     Blue = 'blue'
     Oficial = 'oficial'
-    Solidario = 'solidario'
     Bolsa = 'bolsa'
     CCL = 'contadoconliqui'
     Tarjeta = 'tarjeta'
@@ -27,7 +26,7 @@ def dolarstr(tipo):
 
 # por cada item de Casa  agrega un campo con el nombre del item y el valor del dolar intercalados por "Dolar ARG
 
-client_status = cycle(["Dolar ARG",dolarstr(Casa.Blue.value), "Dolar ARG",dolarstr(Casa.Oficial.value), "Dolar ARG",dolarstr(Casa.Solidario.value),
+client_status = cycle(["Dolar ARG",dolarstr(Casa.Blue.value), "Dolar ARG",dolarstr(Casa.Oficial.value),
                        "Dolar ARG",dolarstr(Casa.Bolsa.value), "Dolar ARG",dolarstr(Casa.CCL.value), "Dolar ARG",dolarstr(Casa.Tarjeta.value),
                        "Dolar ARG",dolarstr(Casa.Mayorista.value), "Dolar ARG",dolarstr(Casa.Cripto.value)])
 
