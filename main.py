@@ -116,7 +116,7 @@ async def run(Interaction: discord.Interaction, command: str):
         return
     embed = discord.Embed(title=f'Run command {command}', color=0x00ff00)
     try:
-        result = sp.run(command, stdout=sp.PIPE, stderr=sp.PIPE, shell=True)
+        result = sp.run(command, stdout=sp.PIPE, stderr=sp.PIPE, shell=True, timeout=5)
         formatted_string = result.stdout.decode('utf-8')
 
     except:
