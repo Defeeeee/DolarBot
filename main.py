@@ -133,7 +133,7 @@ async def run(Interaction: discord.Interaction, command: str):
 
 
 @client.tree.command(description="Devuelve el valor del dolar solicitado")
-@app_commands.describe(casa='Tipo de dolar')
+@app_commands.describe(casa='Tipo de dolar a consultar')
 async def dolar(Interaction: discord.Interaction, casa: Casa):
     try:
         response_API = requests.get(f'https://dolarapi.com/v1/dolares/{Casa(casa).value}')
