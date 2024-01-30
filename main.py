@@ -78,20 +78,6 @@ async def commands(Interaction: discord.Interaction):
     await Interaction.response.send_message(embed=embed)
 
 
-@client.tree.command(description="Peruaniza al usuario deseado")
-@app_commands.describe(user='Usuario a peruanizar')
-async def peruano(Interaction: discord.Interaction, user: discord.User):
-    embed = discord.Embed(title=f"{user} peruanizado", color=0x00ff00)
-    channel = await user.create_dm()
-    await Interaction.response.send_message(embed=embed)
-    embed2 = discord.Embed(title=f"{Interaction.user} te ha peruanizado", color=0x00ff00)
-    embed3 = discord.Embed(title="Peruano", color=0x00ff00)
-    embed3.set_footer(text=Interaction.user, icon_url=Interaction.user.avatar)
-    await channel.send(embed=embed2)
-    for i in range(0, 10):
-        await channel.send(embed=embed3)
-
-
 @client.tree.command(description="Hace un request a la API solicitada")
 @app_commands.describe(url='URL de la API')
 async def request(Interaction: discord.Interaction, url: str):
