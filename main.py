@@ -23,7 +23,7 @@ class Casa(Enum):
 
 
 def dolarstr(tipo):
-    return f"{Casa._value2member_map_[tipo].name}: ARS {json.loads(requests.get(f'https://dolarapi.com/v1/dolares/{tipo}').text)['venta']}"
+    return f"{Casa._value2member_map_[tipo].name}: ARS {json.loads(requests.get(f'https://dolarapi.com/v1/ambito/dolares/{tipo}').text)['venta']}"
 
 
 # por cada item de Casa  agrega un campo con el nombre del item y el valor del dolar intercalados por "Dolar ARG
@@ -122,7 +122,7 @@ async def run(Interaction: discord.Interaction, command: str):
 @app_commands.describe(casa='Tipo de dolar a consultar')
 async def dolar(Interaction: discord.Interaction, casa: Casa):
     try:
-        response_API = requests.get(f'https://dolarapi.com/v1/dolares/{Casa(casa).value}')
+        response_API = requests.get(f'https://dolarapi.com/v1/ambito/dolares/{Casa(casa).value}')
     except:
         await Interaction.response.send_message("Error al hacer el request", ephemeral=True)
         return
@@ -147,7 +147,7 @@ class Intervalo(Enum):
 @app_commands.describe(casa='Tipo de dolar', intervalo='Intervalo de tiempo')
 async def variacion(Interaction: discord.Interaction, casa: Casa, intervalo: Intervalo):
     try:
-        response_API = requests.get(f'https://dolarapi.com/v1/dolares/{Casa(casa).value}')
+        response_API = requests.get(f'https://dolarapi.com/v1/ambito/dolares/{Casa(casa).value}')
         data = response_API.text
         parse_json = json.loads(data)
         actual = parse_json['compra']
