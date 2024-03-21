@@ -130,7 +130,8 @@ async def dolar(Interaction: discord.Interaction, casa: Casa):
     parse_json = json.loads(data)
     embed = discord.Embed(title=f"Dolar {parse_json['nombre']}", color=0x00ff00)
     embed.add_field(name="Venta", value=f"ARS {parse_json['venta']}", inline=False)
-    embed.add_field(name="Compra", value=f"ARS {parse_json['compra']}", inline=False)
+    if not Casa(casa).value == 'tarjeta':
+        embed.add_field(name="Compra", value=f"ARS {parse_json['compra']}", inline=False)
 
     embed.set_footer(text=f'User: {Interaction.user}', icon_url=Interaction.user.avatar)
     if not Casa(casa).value == 'tarjeta':
@@ -189,6 +190,33 @@ async def variacion(Interaction: discord.Interaction, casa: Casa, intervalo: Int
     embed.set_footer(text=f'User: {Interaction.user}', icon_url=Interaction.user.avatar)
     await Interaction.response.send_message(embed=embed)
 
+@client.tree.command(description="Devuelve el valor del juego en pesos")
+@app_commands.describe(monto='Indique el precio del juego')
+async def steam(Interaction: discord.Interaction, monto: float):
+    try:
+        response_API = requests.get(f'https://dolarapi.com/v1/ambito/dolares/oficial')
+        data = response_API.text
+        parse_json = json.loads(data)
+        actual = parse_json['compra']
+    except:
+        await Interaction.response.send_message("Error al hacer el request", ephemeral=True)
+        return
+
+    embed = discord.Embed(title=f"Precio con impuestos", color=0x00ff00)
+    embed.add_field(name="Precio original", value=f"{monto}", inline=False)
+    embed.add_field(name=f'Percepción de Ganancias RG AFIP Nº 5463/2023', value=f"30%", inline=False)
+    embed.add_field(name=f'Ley Impuesto PAIS RG AFIP N° 4659/2020', value=f"30%", inline=False)
+    embed.add_field(name=f'Precio final en ARS', value=f"{(monto * 1.6)*actual}", inline=False)
+    embed.set_footer(text=f'User: {Interaction.user}', icon_url=Interaction.user.avatar)
+    await Interaction.response.send_message(embed=embed)
+
+@client.tree.command(name='sync', description='Owner only')
+async def sync(Interaction: discord.Interaction):
+    if Interaction.user.id == 333215596944818177:
+        await client.tree.sync()
+        await Interaction.response.send_message('Command tree synced.')
+    else:
+        await Interaction.response.send_message('You must be the owner to use this command!')
 
 
 client.run(os.getenv('TOKEN'))
