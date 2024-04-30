@@ -1,6 +1,6 @@
 
 # DolarBot
-Stay up-to-date with the latest dollar exchange rates in Argentina with DolarBot! This handy Discord bot provides various commands to check the current value of different dollar types, view their variations over time, and even make requests to external APIs.
+Stay updated with the latest dollar exchange rates in Argentina with DolarBot! This handy Discord bot provides various commands to check the current value of different dollar types, view their variations over time, and even make requests to external APIs.
 
 ## APIs
 This Discord bot would not be possible without the service provided by [DolarApi](https://dolarapi.com/docs/) & [ArgentinaDatos](https://argentinadatos.com/) which provide me with the updated exchange rates.
