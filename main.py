@@ -23,7 +23,7 @@ class Casa(Enum):
 
 
 def dolarstr(tipo):
-    return f"{Casa._value2member_map_[tipo].name}: ARS {json.loads(requests.get(f'https://dolarapi.com/v1/dolares/{tipo}').text)['venta']}"
+    return f"{Casa._value2member_map_[tipo].name}: ARS {json.loads(requests.get(f'https://dolarapi.com/v1/ambito/dolares/{tipo}').text)['venta']}"
 
 
 # por cada item de Casa  agrega un campo con el nombre del item y el valor del dolar intercalados por "Dolar ARG
@@ -78,20 +78,6 @@ async def commands(Interaction: discord.Interaction):
     await Interaction.response.send_message(embed=embed)
 
 
-@client.tree.command(description="Peruaniza al usuario deseado")
-@app_commands.describe(user='Usuario a peruanizar')
-async def peruano(Interaction: discord.Interaction, user: discord.User):
-    embed = discord.Embed(title=f"{user} peruanizado", color=0x00ff00)
-    channel = await user.create_dm()
-    await Interaction.response.send_message(embed=embed)
-    embed2 = discord.Embed(title=f"{Interaction.user} te ha peruanizado", color=0x00ff00)
-    embed3 = discord.Embed(title="Peruano", color=0x00ff00)
-    embed3.set_footer(text=Interaction.user, icon_url=Interaction.user.avatar)
-    await channel.send(embed=embed2)
-    for i in range(0, 10):
-        await channel.send(embed=embed3)
-
-
 @client.tree.command(description="Hace un request a la API solicitada")
 @app_commands.describe(url='URL de la API')
 async def request(Interaction: discord.Interaction, url: str):
@@ -114,11 +100,15 @@ async def run(Interaction: discord.Interaction, command: str):
     if not Interaction.user.id == 333215596944818177:
         await Interaction.response.send_message("No tenes permiso para usar este comando", ephemeral=True)
         return
+    # await Interaction.response.defer()
     embed = discord.Embed(title=f'Run command {command}', color=0x00ff00)
     try:
-        result = sp.run(command, stdout=sp.PIPE, stderr=sp.PIPE, shell=True)
+        result = sp.run(command, stdout=sp.PIPE, stderr=sp.PIPE, shell=True, timeout=2)
         formatted_string = result.stdout.decode('utf-8')
 
+    except sp.TimeoutExpired:
+        await Interaction.response.send_message("Timeout", ephemeral=True)
+        return
     except:
         await Interaction.response.send_message("Error al correr el comando", ephemeral=True)
         return
@@ -129,10 +119,10 @@ async def run(Interaction: discord.Interaction, command: str):
 
 
 @client.tree.command(description="Devuelve el valor del dolar solicitado")
-@app_commands.describe(casa='Tipo de dolar')
+@app_commands.describe(casa='Tipo de dolar a consultar')
 async def dolar(Interaction: discord.Interaction, casa: Casa):
     try:
-        response_API = requests.get(f'https://dolarapi.com/v1/dolares/{Casa(casa).value}')
+        response_API = requests.get(f'https://dolarapi.com/v1/ambito/dolares/{Casa(casa).value}')
     except:
         await Interaction.response.send_message("Error al hacer el request", ephemeral=True)
         return
@@ -140,7 +130,8 @@ async def dolar(Interaction: discord.Interaction, casa: Casa):
     parse_json = json.loads(data)
     embed = discord.Embed(title=f"Dolar {parse_json['nombre']}", color=0x00ff00)
     embed.add_field(name="Venta", value=f"ARS {parse_json['venta']}", inline=False)
-    embed.add_field(name="Compra", value=f"ARS {parse_json['compra']}", inline=False)
+    if not Casa(casa).value == 'tarjeta':
+        embed.add_field(name="Compra", value=f"ARS {parse_json['compra']}", inline=False)
 
     embed.set_footer(text=f'User: {Interaction.user}', icon_url=Interaction.user.avatar)
     if not Casa(casa).value == 'tarjeta':
@@ -157,7 +148,7 @@ class Intervalo(Enum):
 @app_commands.describe(casa='Tipo de dolar', intervalo='Intervalo de tiempo')
 async def variacion(Interaction: discord.Interaction, casa: Casa, intervalo: Intervalo):
     try:
-        response_API = requests.get(f'https://dolarapi.com/v1/dolares/{Casa(casa).value}')
+        response_API = requests.get(f'https://dolarapi.com/v1/ambito/dolares/{Casa(casa).value}')
         data = response_API.text
         parse_json = json.loads(data)
         actual = parse_json['compra']
@@ -199,6 +190,33 @@ async def variacion(Interaction: discord.Interaction, casa: Casa, intervalo: Int
     embed.set_footer(text=f'User: {Interaction.user}', icon_url=Interaction.user.avatar)
     await Interaction.response.send_message(embed=embed)
 
+@client.tree.command(description="Devuelve el valor del juego en pesos")
+@app_commands.describe(monto='Indique el precio del juego')
+async def steam(Interaction: discord.Interaction, monto: float):
+    try:
+        response_API = requests.get(f'https://dolarapi.com/v1/ambito/dolares/oficial')
+        data = response_API.text
+        parse_json = json.loads(data)
+        actual = parse_json['compra']
+    except:
+        await Interaction.response.send_message("Error al hacer el request", ephemeral=True)
+        return
+
+    embed = discord.Embed(title=f"Precio con impuestos", color=0x00ff00)
+    embed.add_field(name="Precio original", value=f"{monto}", inline=False)
+    embed.add_field(name=f'Percepción de Ganancias RG AFIP Nº 5463/2023', value=f"30%", inline=False)
+    embed.add_field(name=f'Ley Impuesto PAIS RG AFIP N° 4659/2020', value=f"30%", inline=False)
+    embed.add_field(name=f'Precio final en ARS', value=f"{(monto * 1.6)*actual}", inline=False)
+    embed.set_footer(text=f'User: {Interaction.user}', icon_url=Interaction.user.avatar)
+    await Interaction.response.send_message(embed=embed)
+
+@client.tree.command(name='sync', description='Owner only')
+async def sync(Interaction: discord.Interaction):
+    if Interaction.user.id == 333215596944818177:
+        await client.tree.sync()
+        await Interaction.response.send_message('Command tree synced.')
+    else:
+        await Interaction.response.send_message('You must be the owner to use this command!')
 
 
 client.run(os.getenv('TOKEN'))
